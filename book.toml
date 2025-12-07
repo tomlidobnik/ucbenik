@@ -1,0 +1,9 @@
+[book]
+authors = ["Tom Li Dobnik"]
+language = "si"
+src = "src"
+title = "Programiranje"
+
+[output.html]
+git-repository-url = "https://github.com/tomlidobnik/ucbenik"
+git-repository-icon = "fa-github"
