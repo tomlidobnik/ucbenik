@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Kazalci - Programiranje</title>
+        <title>Strukture - Programiranje</title>
 
 
         <!-- Custom HTML head -->
@@ -178,86 +178,109 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="kazalci"><a class="header" href="#kazalci">Kazalci</a></h1>
-<p>Kazalec (pointer) hrani pomnilniški naslov vrednosti. Omogoča neposreden dostop do podatkov na določenem mestu v pomnilniku, kar je močno orodje, a zahteva natančnost.</p>
-<h2 id="osnovna-sintaksa"><a class="header" href="#osnovna-sintaksa">Osnovna sintaksa</a></h2>
-<pre><code class="language-cpp">int vrednost = 42;
-int* kazalec = &amp;vrednost; // kazalec hrani naslov spremenljivke
+                        <h1 id="strukture"><a class="header" href="#strukture">Strukture</a></h1>
+<p><code>struct</code> združuje več vrednosti (polja) v enotno podatkovno vrsto. Uporabimo ga, ko želimo povezati podatke, ki konceptualno sodijo skupaj.</p>
+<h2 id="definicija-in-uporaba"><a class="header" href="#definicija-in-uporaba">Definicija in uporaba</a></h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
 
-std::cout &lt;&lt; "Vrednost: " &lt;&lt; vrednost &lt;&lt; std::endl;
-std::cout &lt;&lt; "Naslov: " &lt;&lt; kazalec &lt;&lt; std::endl;
-std::cout &lt;&lt; "Dostop preko kazalca: " &lt;&lt; *kazalec &lt;&lt; std::endl;
+struct Oseba {
+    std::string ime;
+    int starost;
+};
+
+int main() {
+    Oseba ana{"Ana", 21};      // seznam inicializatorjev
+    Oseba boris;                // neiniciliziran; vrednosti nastavimo ročno
+    boris.ime = "Boris";
+    boris.starost = 19;
+
+    std::cout &lt;&lt; ana.ime &lt;&lt; " ima " &lt;&lt; ana.starost &lt;&lt; " let\n";
+    std::cout &lt;&lt; boris.ime &lt;&lt; " ima " &lt;&lt; boris.starost &lt;&lt; " let\n";
+    return 0;
+}
 </code></pre>
 <ul>
-<li>Operator <code>&amp;</code> vrne naslov spremenljivke, operator <code>*</code> pa dereferencira kazalec (dostop do vsebine na naslovu).</li>
-<li>Naslov, izpisan na zaslon, se običajno prikaže v šestnajstiškem zapisu.</li>
+<li>Člani strukture so dostopni z <code>.</code> (npr. <code>ana.starost</code>).</li>
+<li><code>struct</code> je po privzetem javen (public); pri <code>class</code> so člani po privzetem zasebni (private).</li>
 </ul>
-<h2 id="kazalci-in-funkcije"><a class="header" href="#kazalci-in-funkcije">Kazalci in funkcije</a></h2>
-<p>Kazalce pogosto uporabimo, ko želimo, da funkcija spremeni podatek.</p>
-<pre><code class="language-cpp">void nastaviNaNic(int* ptr) {
-    if (ptr != nullptr) {
-        *ptr = 0;
+<h2 id="funkcije-in-const"><a class="header" href="#funkcije-in-const">Funkcije in <code>const</code></a></h2>
+<p>Strukture lahko posredujemo funkcijam. Uporabimo referenco, da se izognemo kopiranju, in <code>const</code>, če podatkov ne spreminjamo.</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+struct Tocka {
+    int x;
+    int y;
+};
+
+void izpisi(const Tocka&amp; t) {
+    std::cout &lt;&lt; "(" &lt;&lt; t.x &lt;&lt; ", " &lt;&lt; t.y &lt;&lt; ")\n";
+}
+
+int main() {
+    Tocka p{3, 4};
+    izpisi(p);
+}
+</code></pre>
+<h2 id="enosmerno-povezan-seznam"><a class="header" href="#enosmerno-povezan-seznam">Enosmerno povezan seznam</a></h2>
+<p>Enosmerno povezan seznam je zaporedje vozlišč, kjer vsako vozlišče kaže na naslednje. Osnovni primer z dodajanjem na začetek in izpisom:</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+struct Vozlisce {
+    int vrednost;
+    Vozlisce* naslednje;
+};
+
+void push_front(Vozlisce*&amp; glava, int vrednost) {
+    Vozlisce* novo = new Vozlisce{vrednost, glava};
+    glava = novo;
+}
+
+void izpisi(const Vozlisce* glava) {
+    const Vozlisce* p = glava;
+    while (p != nullptr) {
+        std::cout &lt;&lt; p-&gt;vrednost &lt;&lt; " ";
+        p = p-&gt;naslednje;
+    }
+    std::cout &lt;&lt; "\n";
+}
+
+void pocisti(Vozlisce*&amp; glava) {
+    while (glava != nullptr) {
+        Vozlisce* naslednje = glava-&gt;naslednje;
+        delete glava;
+        glava = naslednje;
     }
 }
 
 int main() {
-    int stevilo = 7;
-    nastaviNaNic(&amp;stevilo);
-    std::cout &lt;&lt; "Število: " &lt;&lt; stevilo &lt;&lt; std::endl; // Izpiše 0
+    Vozlisce* glava = nullptr;
+    push_front(glava, 3);
+    push_front(glava, 2);
+    push_front(glava, 1);
+
+    izpisi(glava); // izpiše 1 2 3
+    pocisti(glava);
 }
 </code></pre>
-<p><code>nullptr</code> predstavlja prazen kazalec, ki ne kaže nikamor.</p>
 <ul>
-<li>Preden dereferenčiramo kazalec (<code>*ptr</code>), preverimo, ali ni <code>nullptr</code>, da se izognemo nedoločenemu obnašanju.</li>
-<li>Funkcija prejme naslov spremenljivke z uporabo operatorja <code>&amp;</code>.</li>
-</ul>
-<h2 id="dinamična-dodelitev"><a class="header" href="#dinamična-dodelitev">Dinamična dodelitev</a></h2>
-<p><code>new</code> rezervira prostor v pomnilniku, <code>delete</code> pa ga vrne sistemu. Za vsak <code>new</code> mora obstajati ustrezen <code>delete</code>.</p>
-<pre><code class="language-cpp">int* podatki = new int[3];
-podatki[0] = 1;
-podatki[1] = 2;
-podatki[2] = 3;
-
-for (int i = 0; i &lt; 3; i++) {
-    std::cout &lt;&lt; podatki[i] &lt;&lt; std::endl;
-}
-
-delete[] podatki; // Sprosti polje
-</code></pre>
-<ul>
-<li><code>new int[3]</code> ustvari dinamično polje; uporabljamo ga, ko velikost poznamo šele med izvajanjem.</li>
-<li><code>delete[]</code> mora imeti enake oglate oklepaje kot <code>new[]</code>, sicer sproščanje ni pravilno.</li>
-</ul>
-<p>Pri delu z dinamičnim pomnilnikom pazimo na uhajanje pomnilnika in dostop do že sproščenih podatkov. V sodobnem C++ raje uporabljamo pametne kazalce (<code>std::unique_ptr</code>, <code>std::shared_ptr</code>), ki avtomatizirajo sproščanje.</p>
-<h2 id="kazalci-in-polja"><a class="header" href="#kazalci-in-polja">Kazalci in polja</a></h2>
-<p>Ime polja se v izrazih razstavi v kazalec na prvi element. To pojasni, zakaj <code>sizeof</code> na kazalcu ne vrne velikosti polja.</p>
-<pre><code class="language-cpp">int vrednosti[3] = {10, 20, 30};
-int* p = vrednosti; // enakovredno &amp;vrednosti[0]
-
-std::cout &lt;&lt; *(p + 1) &lt;&lt; std::endl; // Izpiše 20
-</code></pre>
-<ul>
-<li>Izraz <code>p + 1</code> premakne kazalec za en element naprej (upošteva velikost tipa <code>int</code>).</li>
-<li><code>*(p + i)</code> je enakovredno <code>p[i]</code>.</li>
+<li><code>Vozlisce*</code> hrani naslov naslednjega vozlišča ali <code>nullptr</code>, če smo na koncu.</li>
+<li>Vsako dodelitev z <code>new</code> spremlja sprostitev z <code>delete</code> v funkciji <code>pocisti</code>.</li>
 </ul>
 <h2 id="naloge"><a class="header" href="#naloge">Naloge</a></h2>
 <ol>
-<li>Napiši program, ki uporablja kazalec za zamenjavo vrednosti dveh spremenljivk.</li>
-<li>Ustvari funkcijo, ki prejme kazalec na <code>int</code> in ga, če ni <code>nullptr</code>, poveča za 10.</li>
-<li>Napiši program, ki dinamično ustvari polje velikosti <code>n</code>, ga napolni s kvadrati indeksov in na koncu pravilno sprosti pomnilnik.</li>
+<li>Ustvari <code>struct Pravokotnik</code> s polji <code>sirina</code> in <code>visina</code> ter funkcijo, ki izračuna ploščino. V <code>main</code> ustvari primer in izpiši ploščino.</li>
+<li>Napiši funkcijo <code>premakni(Tocka&amp; t, int dx, int dy)</code>, ki točko premakne za podane razlike. Preizkusi jo na točki <code>(0,0)</code>.</li>
 </ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="polja.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="kazalci.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="strukture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -265,13 +288,10 @@ std::cout &lt;&lt; *(p + 1) &lt;&lt; std::endl; // Izpiše 20
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="polja.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="kazalci.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="strukture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

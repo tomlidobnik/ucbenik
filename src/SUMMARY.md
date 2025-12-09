@@ -9,3 +9,4 @@
 -   [Funkcije](./funkcije.md)
 -   [Polja](./polja.md)
 -   [Kazalci](./kazalci.md)
+-   [Strukture](./strukture.md)

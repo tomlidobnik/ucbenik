@@ -810,6 +810,100 @@ std::cout &lt;&lt; *(p + 1) &lt;&lt; std::endl; // Izpiše 20
 <li>Ustvari funkcijo, ki prejme kazalec na <code>int</code> in ga, če ni <code>nullptr</code>, poveča za 10.</li>
 <li>Napiši program, ki dinamično ustvari polje velikosti <code>n</code>, ga napolni s kvadrati indeksov in na koncu pravilno sprosti pomnilnik.</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="strukture"><a class="header" href="#strukture">Strukture</a></h1>
+<p><code>struct</code> združuje več vrednosti (polja) v enotno podatkovno vrsto. Uporabimo ga, ko želimo povezati podatke, ki konceptualno sodijo skupaj.</p>
+<h2 id="definicija-in-uporaba"><a class="header" href="#definicija-in-uporaba">Definicija in uporaba</a></h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+struct Oseba {
+    std::string ime;
+    int starost;
+};
+
+int main() {
+    Oseba ana{"Ana", 21};      // seznam inicializatorjev
+    Oseba boris;                // neiniciliziran; vrednosti nastavimo ročno
+    boris.ime = "Boris";
+    boris.starost = 19;
+
+    std::cout &lt;&lt; ana.ime &lt;&lt; " ima " &lt;&lt; ana.starost &lt;&lt; " let\n";
+    std::cout &lt;&lt; boris.ime &lt;&lt; " ima " &lt;&lt; boris.starost &lt;&lt; " let\n";
+    return 0;
+}
+</code></pre>
+<ul>
+<li>Člani strukture so dostopni z <code>.</code> (npr. <code>ana.starost</code>).</li>
+<li><code>struct</code> je po privzetem javen (public); pri <code>class</code> so člani po privzetem zasebni (private).</li>
+</ul>
+<h2 id="funkcije-in-const"><a class="header" href="#funkcije-in-const">Funkcije in <code>const</code></a></h2>
+<p>Strukture lahko posredujemo funkcijam. Uporabimo referenco, da se izognemo kopiranju, in <code>const</code>, če podatkov ne spreminjamo.</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+struct Tocka {
+    int x;
+    int y;
+};
+
+void izpisi(const Tocka&amp; t) {
+    std::cout &lt;&lt; "(" &lt;&lt; t.x &lt;&lt; ", " &lt;&lt; t.y &lt;&lt; ")\n";
+}
+
+int main() {
+    Tocka p{3, 4};
+    izpisi(p);
+}
+</code></pre>
+<h2 id="enosmerno-povezan-seznam"><a class="header" href="#enosmerno-povezan-seznam">Enosmerno povezan seznam</a></h2>
+<p>Enosmerno povezan seznam je zaporedje vozlišč, kjer vsako vozlišče kaže na naslednje. Osnovni primer z dodajanjem na začetek in izpisom:</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+struct Vozlisce {
+    int vrednost;
+    Vozlisce* naslednje;
+};
+
+void push_front(Vozlisce*&amp; glava, int vrednost) {
+    Vozlisce* novo = new Vozlisce{vrednost, glava};
+    glava = novo;
+}
+
+void izpisi(const Vozlisce* glava) {
+    const Vozlisce* p = glava;
+    while (p != nullptr) {
+        std::cout &lt;&lt; p-&gt;vrednost &lt;&lt; " ";
+        p = p-&gt;naslednje;
+    }
+    std::cout &lt;&lt; "\n";
+}
+
+void pocisti(Vozlisce*&amp; glava) {
+    while (glava != nullptr) {
+        Vozlisce* naslednje = glava-&gt;naslednje;
+        delete glava;
+        glava = naslednje;
+    }
+}
+
+int main() {
+    Vozlisce* glava = nullptr;
+    push_front(glava, 3);
+    push_front(glava, 2);
+    push_front(glava, 1);
+
+    izpisi(glava); // izpiše 1 2 3
+    pocisti(glava);
+}
+</code></pre>
+<ul>
+<li><code>Vozlisce*</code> hrani naslov naslednjega vozlišča ali <code>nullptr</code>, če smo na koncu.</li>
+<li>Vsako dodelitev z <code>new</code> spremlja sprostitev z <code>delete</code> v funkciji <code>pocisti</code>.</li>
+</ul>
+<h2 id="naloge-6"><a class="header" href="#naloge-6">Naloge</a></h2>
+<ol>
+<li>Ustvari <code>struct Pravokotnik</code> s polji <code>sirina</code> in <code>visina</code> ter funkcijo, ki izračuna ploščino. V <code>main</code> ustvari primer in izpiši ploščino.</li>
+<li>Napiši funkcijo <code>premakni(Tocka&amp; t, int dx, int dy)</code>, ki točko premakne za podane razlike. Preizkusi jo na točki <code>(0,0)</code>.</li>
+</ol>
 
                     </main>
 
