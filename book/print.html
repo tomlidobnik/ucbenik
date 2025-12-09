@@ -519,7 +519,7 @@ if (starost &gt;= 18) {
 <p>Zanke ponavljajo blok kode, dokler je izpolnjen določen pogoj. To je uporabno, kadar želimo določen del kode izvesti večkrat.</p>
 <h2 id="for"><a class="header" href="#for"><code>for</code></a></h2>
 <p><code>for</code> zanka združi inicializacijo, pogoj in posodobitev v eni vrstici.</p>
-<pre><code class="language-cpp">for (int i = 0; i &lt; 5; ++i) {
+<pre><code class="language-cpp">for (int i = 0; i &lt; 5; i++) {
     std::cout &lt;&lt; "Ponovitev: " &lt;&lt; i &lt;&lt; std::endl;
 }
 </code></pre>
@@ -571,7 +571,7 @@ do {
 <li><code>break</code> takoj konča zanko.</li>
 <li><code>continue</code> preskoči preostanek trenutne iteracije.</li>
 </ul>
-<pre><code class="language-cpp">for (int i = 0; i &lt; 5; ++i) {
+<pre><code class="language-cpp">for (int i = 0; i &lt; 5; i++) {
     if (i == 2) {
         continue; // Preskoči 2
     }

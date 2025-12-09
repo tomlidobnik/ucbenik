@@ -7,7 +7,7 @@ Zanke ponavljajo blok kode, dokler je izpolnjen določen pogoj. To je uporabno, 
 `for` zanka združi inicializacijo, pogoj in posodobitev v eni vrstici.
 
 ```cpp
-for (int i = 0; i < 5; ++i) {
+for (int i = 0; i < 5; i++) {
     std::cout << "Ponovitev: " << i << std::endl;
 }
 ```
@@ -69,7 +69,7 @@ for (int vrstica = 0; vrstica < 3; vrstica++) {
 -   `continue` preskoči preostanek trenutne iteracije.
 
 ```cpp
-for (int i = 0; i < 5; ++i) {
+for (int i = 0; i < 5; i++) {
     if (i == 2) {
         continue; // Preskoči 2
     }
